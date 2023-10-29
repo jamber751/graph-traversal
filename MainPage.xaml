@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:drawable="clr-namespace:graph_traversal"
+             x:Class="graph_traversal.MainPage">
+
+    <ContentPage.Resources>
+        <drawable:GraphDrawable x:Key="drawable" />
+    </ContentPage.Resources>
+
+    <VerticalStackLayout Margin="20">
+
+        <Grid ColumnDefinitions="2*, 8*" RowDefinitions="8*, 2*" ColumnSpacing="10" RowSpacing="10">
+
+            <Frame Grid.Row="0" Grid.Column="0">
+                <VerticalStackLayout Spacing="20">
+                    <Button x:Name="addNodesMode" Text="Добавить вершины" Clicked="addNodesMode_Clicked" IsEnabled="False"/>
+                    <Button x:Name="addLinksMode" Text="Соединить вершины" Clicked="addLinksMode_Clicked" IsEnabled="True"/>
+                    <Button x:Name="removeNodesMode" Text="Удалить вершины" Clicked="removeNodesMode_Clicked" IsEnabled="True"/>
+                    <Button x:Name="removeLinksMode" Text="Отсоеденить вершины" Clicked="removeLinksMode_Clicked" IsEnabled="True"/>
+                    <Button x:Name="clearCanvas" Text="Очистить полотно" Clicked="clearCanvas_Clicked"/>
+
+                    <Button x:Name="acceptGraph" Text="Готово" VerticalOptions="End"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame Grid.Row="0" Grid.Column="1">
+                <GraphicsView x:Name="graphDrawableView" Drawable="{StaticResource drawable}" BackgroundColor="#EAEEFA"
+                      HeightRequest="720"
+                      WidthRequest="1280">
+                    <GraphicsView.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                    </GraphicsView.GestureRecognizers>
+                </GraphicsView>
+            </Frame>
+
+            <Frame Grid.Row="1" Grid.ColumnSpan="2">
+                
+            </Frame>
+
+        </Grid>
+
+    </VerticalStackLayout>
+</ContentPage>
