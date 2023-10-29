@@ -238,15 +238,13 @@ public partial class MainPage : ContentPage
                                 {
                                     graphDrawable.selectedID = null;
                                     graphDrawable.Links.Remove(link);
-                                    break;
-                                }
-                                else
-                                {
-                                    DisplayAlert("Ошибка", "Вершины не соединены", "Ok");
-                                    graphDrawable.selectedID = null;
-                                    break;
+                                    graphView.Invalidate();
+                                    return;
                                 }
                             }
+                            DisplayAlert("Ошибка", "Вершины не соединены", "Ok");
+                            graphDrawable.selectedID = null;
+                            break;
                         }
                         graphView.Invalidate();
                         break;
