@@ -71,7 +71,7 @@ public class GraphDrawable : BaseDrawable, IDrawable
 
     public void resetNodes()
     {
-        foreach(Node node in Nodes.Values)
+        foreach (Node node in Nodes.Values)
         {
             node.dayVisited = null;
             node.visitedFrom = null;
@@ -93,7 +93,7 @@ public partial class MainPage : ContentPage
 
     void switchMode(int num)
     {
-        foreach(Button button in canvasButtons.Children) button.IsEnabled = true;
+        foreach (Button button in canvasButtons.Children) button.IsEnabled = true;
         nextStep.IsEnabled = startAlgo.IsEnabled = resetAlgo.IsEnabled = editGraph.IsEnabled = false;
 
         switch (num)
@@ -162,22 +162,35 @@ public partial class MainPage : ContentPage
         switchMode(0);
     }
 
+    void addToGrid(Node node)
+    {
+        gridAnswer.AddRowDefinition(new RowDefinition());
+
+        Label label1 = new Label() { Text = node.id.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20 };
+        Label label2 = new Label() { Text = node.dayVisited.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20 };
+        Label label3 = new Label() { Text = node.visitedFrom.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20 };
+
+        gridAnswer.Add(label1, 0, gridAnswer.RowDefinitions.Count - 1);
+        gridAnswer.Add(label2, 1, gridAnswer.RowDefinitions.Count - 1);
+        gridAnswer.Add(label3, 2, gridAnswer.RowDefinitions.Count - 1);
+    }
+
+
     void startAlgo_Clicked(System.Object sender, System.EventArgs e)
     {
         var graphView = this.graphDrawableView;
         var graphDrawable = (GraphDrawable)graphView.Drawable;
 
         graphDrawable.resetNodes();
-
         dayCount = 1;
+
         graphDrawable.currentIDs.Add(startID);
         graphDrawable.Nodes[startID].dayVisited = dayCount;
         graphDrawable.Nodes[startID].visitedFrom = -1;
 
+        addToGrid(graphDrawable.Nodes[startID]);
+
         graphView.Invalidate();
-
-        
-
 
         switchMode(5);
     }
@@ -188,8 +201,11 @@ public partial class MainPage : ContentPage
         var graphView = this.graphDrawableView;
         var graphDrawable = (GraphDrawable)graphView.Drawable;
         graphDrawable.resetNodes();
-
         graphView.Invalidate();
+
+        gridAnswer.Children.Clear();
+        gridAnswer.RowDefinitions.Clear();
+
         switchMode(4);
     }
 
@@ -209,29 +225,28 @@ public partial class MainPage : ContentPage
 
         graphDrawable.currentIDs.Clear();
 
-        foreach(int id in temp)
+        foreach (int id in temp)
         {
-            foreach(Link link in graphDrawable.Links)
+            foreach (Link link in graphDrawable.Links)
             {
                 if (link.id1 == id && !graphDrawable.visitedIDs.Contains(link.id2))
                 {
                     graphDrawable.currentIDs.Add(link.id2);
                     graphDrawable.Nodes[link.id2].visitedFrom = id;
                     graphDrawable.Nodes[link.id2].dayVisited = dayCount;
+                    addToGrid(graphDrawable.Nodes[link.id2]);
                 }
                 else if (link.id2 == id && !graphDrawable.visitedIDs.Contains(link.id1))
                 {
                     graphDrawable.currentIDs.Add(link.id1);
                     graphDrawable.Nodes[link.id1].visitedFrom = id;
                     graphDrawable.Nodes[link.id1].dayVisited = dayCount;
+                    addToGrid(graphDrawable.Nodes[link.id1]);
                 }
             }
         }
-
         graphView.Invalidate();
-
-
-        if (graphDrawable.visitedIDs.Count + graphDrawable.currentIDs.Count == graphDrawable.Nodes.Count )
+        if (graphDrawable.visitedIDs.Count + graphDrawable.currentIDs.Count == graphDrawable.Nodes.Count)
         {
             DisplayAlert("Успех", "Обход графа завершен", "Ok");
             switchMode(6);

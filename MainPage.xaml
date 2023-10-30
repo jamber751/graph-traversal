@@ -70,7 +70,17 @@
             </Frame>
 
             <Frame Grid.Column="2">
-                
+                <VerticalStackLayout Spacing="20" Margin="20">
+                    <Grid ColumnDefinitions="3*, 3*, 3*">
+                        <Label Grid.Column="0" Text="Номер" FontSize="20" HorizontalOptions="Center"/>
+                        <Label Grid.Column="1" Text="День" FontSize="20" HorizontalOptions="Center"/>
+                        <Label Grid.Column="2" Text="Откуда" FontSize="20" HorizontalOptions="Center"/>
+                    </Grid>
+
+                    <Grid x:Name="gridAnswer" ColumnDefinitions="3*,3*,3*" RowSpacing="20">
+                    </Grid>
+
+                </VerticalStackLayout>
             </Frame>
 
         </Grid>
