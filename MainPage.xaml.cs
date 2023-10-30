@@ -1,5 +1,6 @@
 ﻿namespace graph_traversal;
 
+
 public class Node
 {
     public int id { get; set; }
@@ -8,6 +9,7 @@ public class Node
     public int? dayVisited { get; set; } = null;
     public int? visitedFrom { get; set; } = null;
 }
+
 
 public class Link
 {
@@ -25,15 +27,15 @@ public abstract class BaseDrawable : IDrawable
 public class GraphDrawable : BaseDrawable, IDrawable
 {
     static int D = 50;
-
     public int? selectedID { get; set; }
 
     public Dictionary<int, Node> Nodes { get; set; } = new Dictionary<int, Node>();
     public List<Link> Links { get; set; } = new List<Link>();
 
-
     public HashSet<int> visitedIDs { get; set; } = new HashSet<int>();
     public HashSet<int> currentIDs { get; set; } = new HashSet<int>();
+
+    public int? currentID { get; set; }
 
     public override void Draw(ICanvas canvas, RectF dirtyRect)
     {
@@ -57,6 +59,8 @@ public class GraphDrawable : BaseDrawable, IDrawable
 
             if (visitedIDs.Contains(node.id)) canvas.FillColor = Colors.Red;
             if (currentIDs.Contains(node.id)) canvas.FillColor = Colors.Green;
+            if (currentID == node.id) canvas.FillColor = Colors.Green;
+
 
             PathF path = new PathF();
             path.AppendCircle(node.X, node.Y, D / 2);
@@ -69,6 +73,7 @@ public class GraphDrawable : BaseDrawable, IDrawable
         }
     }
 
+
     public void resetNodes()
     {
         foreach (Node node in Nodes.Values)
@@ -78,10 +83,9 @@ public class GraphDrawable : BaseDrawable, IDrawable
         }
         currentIDs.Clear();
         visitedIDs.Clear();
+        currentID = null;
     }
 }
-
-
 
 
 public partial class MainPage : ContentPage
@@ -90,6 +94,7 @@ public partial class MainPage : ContentPage
     int mode = 0;
     int startID = 4;
     int dayCount = 1;
+
 
     void switchMode(int num)
     {
@@ -132,35 +137,42 @@ public partial class MainPage : ContentPage
         }
     }
 
+
     void addNodesMode_Clicked(System.Object sender, System.EventArgs e)
     {
         switchMode(0);
     }
+
 
     void addLinksMode_Clicked(System.Object sender, System.EventArgs e)
     {
         switchMode(1);
     }
 
+
     void removeNodesMode_Clicked(System.Object sender, System.EventArgs e)
     {
         switchMode(2);
     }
+
 
     void removeLinksMode_Clicked(System.Object sender, System.EventArgs e)
     {
         switchMode(3);
     }
 
+
     void acceptGraph_Clicked(System.Object sender, System.EventArgs e)
     {
         switchMode(4);
     }
 
+
     void editGraph_Clicked(System.Object sender, System.EventArgs e)
     {
         switchMode(0);
     }
+
 
     void addToGrid(Node node)
     {
@@ -184,9 +196,13 @@ public partial class MainPage : ContentPage
         graphDrawable.resetNodes();
         dayCount = 1;
 
-        graphDrawable.currentIDs.Add(startID);
+        //graphDrawable.currentIDs.Add(startID);
         graphDrawable.Nodes[startID].dayVisited = dayCount;
         graphDrawable.Nodes[startID].visitedFrom = -1;
+
+
+        graphDrawable.currentID = startID;
+        graphDrawable.visitedIDs.Add(startID);
 
         addToGrid(graphDrawable.Nodes[startID]);
 
@@ -194,6 +210,7 @@ public partial class MainPage : ContentPage
 
         switchMode(5);
     }
+
 
     void resetAlgo_Clicked(System.Object sender, System.EventArgs e)
     {
@@ -209,6 +226,53 @@ public partial class MainPage : ContentPage
         switchMode(4);
     }
 
+
+    void nextStep_Clicked1(System.Object sender, System.EventArgs e)
+    {
+        var graphView = this.graphDrawableView;
+        var graphDrawable = (GraphDrawable)graphView.Drawable;
+
+        bool newNodeFound = false;
+
+        foreach (Link link in graphDrawable.Links)
+        {
+            if (link.id1 == graphDrawable.currentID && !graphDrawable.visitedIDs.Contains(link.id2))
+            {
+                graphDrawable.currentID = link.id2;
+                graphDrawable.visitedIDs.Add(link.id2);
+                graphDrawable.Nodes[link.id2].visitedFrom = link.id1;
+                graphDrawable.Nodes[link.id2].dayVisited = ++dayCount;
+                newNodeFound = true;
+                addToGrid(graphDrawable.Nodes[link.id2]);
+                break;
+            }
+            else if (link.id2 == graphDrawable.currentID && !graphDrawable.visitedIDs.Contains(link.id1))
+            {
+                graphDrawable.currentID = link.id1;
+                graphDrawable.visitedIDs.Add(link.id1);
+                graphDrawable.Nodes[link.id1].visitedFrom = link.id2;
+                graphDrawable.Nodes[link.id1].dayVisited = ++dayCount;
+                newNodeFound = true;
+                addToGrid(graphDrawable.Nodes[link.id1]);
+                break;
+            }
+        }
+
+        if (!newNodeFound)
+        {
+            graphDrawable.currentID = graphDrawable.Nodes[(int)graphDrawable.currentID].visitedFrom;
+        }
+
+        graphView.Invalidate();
+
+        if(graphDrawable.visitedIDs.Count == graphDrawable.Nodes.Count)
+        {
+            DisplayAlert("Успех", "Обход графа завершен", "Ok");
+            switchMode(6);
+        }
+    }
+
+
     void nextStep_Clicked(System.Object sender, System.EventArgs e)
     {
         dayCount++;
@@ -218,10 +282,7 @@ public partial class MainPage : ContentPage
 
         List<int> temp = new List<int>(graphDrawable.currentIDs);
 
-        foreach (int id in graphDrawable.currentIDs)
-        {
-            graphDrawable.visitedIDs.Add(id);
-        }
+        graphDrawable.visitedIDs.UnionWith(graphDrawable.currentIDs);
 
         graphDrawable.currentIDs.Clear();
 
@@ -265,6 +326,7 @@ public partial class MainPage : ContentPage
         graphView.Invalidate();
         switchMode(0);
     }
+
 
     void TapGestureRecognizer_Tapped(System.Object sender, Microsoft.Maui.Controls.TappedEventArgs e)
     {
@@ -386,9 +448,9 @@ public partial class MainPage : ContentPage
         }
     }
 
+
     public MainPage()
     {
         InitializeComponent();
     }
-
 }

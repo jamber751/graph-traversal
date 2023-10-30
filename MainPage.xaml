@@ -48,7 +48,7 @@
 
                             <Grid ColumnDefinitions="5*, 5*" ColumnSpacing="10">
                                 <Button x:Name="startAlgo" Text="Начать обход" Clicked="startAlgo_Clicked" IsEnabled="False" Grid.Column="0"/>
-                                <Button x:Name="nextStep" Text="Следующий шаг" Clicked="nextStep_Clicked" IsEnabled="False" Grid.Column="1"/>
+                                <Button x:Name="nextStep" Text="Следующий шаг" Clicked="nextStep_Clicked1" IsEnabled="False" Grid.Column="1"/>
                             </Grid>
 
                             <Button x:Name="resetAlgo" Text="Сбросить" Clicked="resetAlgo_Clicked" IsEnabled="False"/>
