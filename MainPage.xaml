@@ -33,13 +33,14 @@
                             <Entry x:Name="beginningEntry" HorizontalOptions="Fill"/>
 
                             <Label Text="Способ обхода" HorizontalOptions="Start" FontSize="20"/>
+
                             <VerticalStackLayout x:Name="algoSelector" HorizontalOptions="Start">
-                                <RadioButton BindingContext="{x:Reference algoSelector}" FontSize="25" CharacterSpacing="5">
+                                <RadioButton x:Name="BFS" IsChecked="True" FontSize="25" CharacterSpacing="5" CheckedChanged="algorithmSwitcher">
                                     <RadioButton.Content>
                                         <Label Text="В ширину" Margin="10,0,0,0" FontSize="15"/>
                                     </RadioButton.Content>
                                 </RadioButton>
-                                <RadioButton BindingContext="{x:Reference algoSelector}" FontSize="25">
+                                <RadioButton x:Name="DFS" IsChecked="False" FontSize="25" CharacterSpacing="5" CheckedChanged="algorithmSwitcher">
                                     <RadioButton.Content>
                                         <Label Text="В глубину" Margin="10,0,0,0" FontSize="15"/>
                                     </RadioButton.Content>
@@ -48,7 +49,7 @@
 
                             <Grid ColumnDefinitions="5*, 5*" ColumnSpacing="10">
                                 <Button x:Name="startAlgo" Text="Начать обход" Clicked="startAlgo_Clicked" IsEnabled="False" Grid.Column="0"/>
-                                <Button x:Name="nextStep" Text="Следующий шаг" Clicked="nextStep_Clicked1" IsEnabled="False" Grid.Column="1"/>
+                                <Button x:Name="nextStep" Text="Следующий шаг" Clicked="nextStep_Clicked" IsEnabled="False" Grid.Column="1"/>
                             </Grid>
 
                             <Button x:Name="resetAlgo" Text="Сбросить" Clicked="resetAlgo_Clicked" IsEnabled="False"/>
@@ -76,6 +77,7 @@
                         <Label Grid.Column="1" Text="День" FontSize="20" HorizontalOptions="Center"/>
                         <Label Grid.Column="2" Text="Откуда" FontSize="20" HorizontalOptions="Center"/>
                     </Grid>
+                    <Label x:Name="test"/>
 
                     <Grid x:Name="gridAnswer" ColumnDefinitions="3*,3*,3*" RowSpacing="20">
                     </Grid>

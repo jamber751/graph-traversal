@@ -95,6 +95,16 @@ public partial class MainPage : ContentPage
     int startID = 4;
     int dayCount = 1;
 
+    void algorithmSwitcher(System.Object sender, Microsoft.Maui.Controls.CheckedChangedEventArgs e)
+    {
+        RadioButton radiobutton = sender as RadioButton;
+        if(radiobutton.IsChecked)
+        {
+            if(radiobutton == BFS) nextStep.Clicked += nextStep_Clicked1;
+            if(radiobutton == DFS) nextStep.Clicked += nextStep_Clicked;
+        }
+    }
+
 
     void switchMode(int num)
     {
@@ -196,13 +206,13 @@ public partial class MainPage : ContentPage
         graphDrawable.resetNodes();
         dayCount = 1;
 
-        //graphDrawable.currentIDs.Add(startID);
+        graphDrawable.currentIDs.Add(startID);
         graphDrawable.Nodes[startID].dayVisited = dayCount;
         graphDrawable.Nodes[startID].visitedFrom = -1;
 
 
-        graphDrawable.currentID = startID;
-        graphDrawable.visitedIDs.Add(startID);
+        //graphDrawable.currentID = startID;
+        //graphDrawable.visitedIDs.Add(startID);
 
         addToGrid(graphDrawable.Nodes[startID]);
 
