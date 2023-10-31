@@ -101,49 +101,21 @@ public partial class MainPage : ContentPage
         RadioButton radiobutton = sender as RadioButton;
         if(radiobutton.IsChecked)
         {
-            if (radiobutton == BFS) algorithmID = 0;
-            if (radiobutton == DFS) algorithmID = 1;
+            if (radiobutton == ButtonBFS) algorithmID = 0;
+            if (radiobutton == ButtonDFS) algorithmID = 1;
         }
     }
 
 
-    void switchMode(int num)
+    void nextStep_Clicked(System.Object sender, System.EventArgs e)
     {
-        foreach (Button button in canvasButtons.Children) button.IsEnabled = true;
-        nextStep.IsEnabled = startAlgo.IsEnabled = resetAlgo.IsEnabled = editGraph.IsEnabled = false;
-
-        switch (num)
+        switch(algorithmID)
         {
             case 0:
-                addNodesMode.IsEnabled = false;
-                mode = 0;
+                BFS();
                 break;
             case 1:
-                addLinksMode.IsEnabled = false;
-                mode = 1;
-                break;
-            case 2:
-                removeNodesMode.IsEnabled = false;
-                mode = 2;
-                break;
-            case 3:
-                removeLinksMode.IsEnabled = false;
-                mode = 3;
-                break;
-            case 4:
-                foreach (Button button in canvasButtons.Children) button.IsEnabled = false;
-                startAlgo.IsEnabled = true;
-                editGraph.IsEnabled = true;
-                mode = 4;
-                break;
-            case 5:
-                foreach (Button button in canvasButtons.Children) button.IsEnabled = false;
-                nextStep.IsEnabled = true;
-                resetAlgo.IsEnabled = true;
-                break;
-            case 6:
-                foreach (Button button in canvasButtons.Children) button.IsEnabled = false;
-                resetAlgo.IsEnabled = true;
+                DFS();
                 break;
         }
     }
@@ -193,8 +165,8 @@ public partial class MainPage : ContentPage
         Label label2 = new Label() { Text = node.dayVisited.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20 };
         Label label3 = new Label() { Text = node.visitedFrom.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20 };
 
-        gridAnswer.Add(label1, 0, gridAnswer.RowDefinitions.Count - 1);
-        gridAnswer.Add(label2, 1, gridAnswer.RowDefinitions.Count - 1);
+        gridAnswer.Add(label1, 1, gridAnswer.RowDefinitions.Count - 1);
+        gridAnswer.Add(label2, 0, gridAnswer.RowDefinitions.Count - 1);
         gridAnswer.Add(label3, 2, gridAnswer.RowDefinitions.Count - 1);
     }
 
@@ -220,12 +192,12 @@ public partial class MainPage : ContentPage
                     graphDrawable.currentIDs.Add(startID);
                     graphDrawable.Nodes[startID].dayVisited = dayCount;
                     graphDrawable.Nodes[startID].visitedFrom = -1;
-                    nextStep.Clicked += BFS;
                     break;
                 case 1:
                     graphDrawable.currentID = startID;
                     graphDrawable.visitedIDs.Add(startID);
-                    nextStep.Clicked += DFS;
+                    graphDrawable.Nodes[startID].dayVisited = dayCount;
+                    graphDrawable.Nodes[startID].visitedFrom = -1;
                     break;
             }
             addToGrid(graphDrawable.Nodes[startID]);
@@ -253,7 +225,49 @@ public partial class MainPage : ContentPage
     }
 
 
-    void DFS(System.Object sender, System.EventArgs e)
+    void BFS()
+    {
+        dayCount++;
+
+        var graphView = this.graphDrawableView;
+        var graphDrawable = (GraphDrawable)graphView.Drawable;
+
+        List<int> temp = new List<int>(graphDrawable.currentIDs);
+
+        graphDrawable.visitedIDs.UnionWith(graphDrawable.currentIDs);
+
+        graphDrawable.currentIDs.Clear();
+
+        foreach (int id in temp)
+        {
+            foreach (Link link in graphDrawable.Links)
+            {
+                if (link.id1 == id && !graphDrawable.visitedIDs.Contains(link.id2) && !graphDrawable.currentIDs.Contains(link.id2))
+                {
+                    graphDrawable.currentIDs.Add(link.id2);
+                    graphDrawable.Nodes[link.id2].visitedFrom = id;
+                    graphDrawable.Nodes[link.id2].dayVisited = dayCount;
+                    addToGrid(graphDrawable.Nodes[link.id2]);
+                }
+                else if (link.id2 == id && !graphDrawable.visitedIDs.Contains(link.id1) && !graphDrawable.currentIDs.Contains(link.id1))
+                {
+                    graphDrawable.currentIDs.Add(link.id1);
+                    graphDrawable.Nodes[link.id1].visitedFrom = id;
+                    graphDrawable.Nodes[link.id1].dayVisited = dayCount;
+                    addToGrid(graphDrawable.Nodes[link.id1]);
+                }
+            }
+        }
+        graphView.Invalidate();
+        if (graphDrawable.visitedIDs.Count + graphDrawable.currentIDs.Count == graphDrawable.Nodes.Count)
+        {
+            DisplayAlert("Успех", "Обход графа завершен", "Ok");
+            switchMode(6);
+        }
+    }
+
+
+    void DFS()
     {
         var graphView = this.graphDrawableView;
         var graphDrawable = (GraphDrawable)graphView.Drawable;
@@ -291,49 +305,7 @@ public partial class MainPage : ContentPage
 
         graphView.Invalidate();
 
-        if(graphDrawable.visitedIDs.Count == graphDrawable.Nodes.Count)
-        {
-            DisplayAlert("Успех", "Обход графа завершен", "Ok");
-            switchMode(6);
-        }
-    }
-
-
-    void BFS(System.Object sender, System.EventArgs e)
-    {
-        dayCount++;
-
-        var graphView = this.graphDrawableView;
-        var graphDrawable = (GraphDrawable)graphView.Drawable;
-
-        List<int> temp = new List<int>(graphDrawable.currentIDs);
-
-        graphDrawable.visitedIDs.UnionWith(graphDrawable.currentIDs);
-
-        graphDrawable.currentIDs.Clear();
-
-        foreach (int id in temp)
-        {
-            foreach (Link link in graphDrawable.Links)
-            {
-                if (link.id1 == id && !graphDrawable.visitedIDs.Contains(link.id2))
-                {
-                    graphDrawable.currentIDs.Add(link.id2);
-                    graphDrawable.Nodes[link.id2].visitedFrom = id;
-                    graphDrawable.Nodes[link.id2].dayVisited = dayCount;
-                    addToGrid(graphDrawable.Nodes[link.id2]);
-                }
-                else if (link.id2 == id && !graphDrawable.visitedIDs.Contains(link.id1))
-                {
-                    graphDrawable.currentIDs.Add(link.id1);
-                    graphDrawable.Nodes[link.id1].visitedFrom = id;
-                    graphDrawable.Nodes[link.id1].dayVisited = dayCount;
-                    addToGrid(graphDrawable.Nodes[link.id1]);
-                }
-            }
-        }
-        graphView.Invalidate();
-        if (graphDrawable.visitedIDs.Count + graphDrawable.currentIDs.Count == graphDrawable.Nodes.Count)
+        if (graphDrawable.visitedIDs.Count == graphDrawable.Nodes.Count)
         {
             DisplayAlert("Успех", "Обход графа завершен", "Ok");
             switchMode(6);
@@ -474,6 +446,47 @@ public partial class MainPage : ContentPage
         }
     }
 
+
+    void switchMode(int num)
+    {
+        foreach (Button button in canvasButtons.Children) button.IsEnabled = true;
+        nextStep.IsEnabled = startAlgo.IsEnabled = resetAlgo.IsEnabled = editGraph.IsEnabled = false;
+
+        switch (num)
+        {
+            case 0:
+                addNodesMode.IsEnabled = false;
+                mode = 0;
+                break;
+            case 1:
+                addLinksMode.IsEnabled = false;
+                mode = 1;
+                break;
+            case 2:
+                removeNodesMode.IsEnabled = false;
+                mode = 2;
+                break;
+            case 3:
+                removeLinksMode.IsEnabled = false;
+                mode = 3;
+                break;
+            case 4:
+                foreach (Button button in canvasButtons.Children) button.IsEnabled = false;
+                startAlgo.IsEnabled = true;
+                editGraph.IsEnabled = true;
+                mode = 4;
+                break;
+            case 5:
+                foreach (Button button in canvasButtons.Children) button.IsEnabled = false;
+                nextStep.IsEnabled = true;
+                resetAlgo.IsEnabled = true;
+                break;
+            case 6:
+                foreach (Button button in canvasButtons.Children) button.IsEnabled = false;
+                resetAlgo.IsEnabled = true;
+                break;
+        }
+    }
 
     public MainPage()
     {

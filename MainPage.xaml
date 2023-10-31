@@ -34,12 +34,12 @@
                             <Label Text="Способ обхода" HorizontalOptions="Start" FontSize="20"/>
 
                             <VerticalStackLayout x:Name="algoSelector" HorizontalOptions="Start">
-                                <RadioButton x:Name="BFS" IsChecked="True" FontSize="25" CharacterSpacing="5" CheckedChanged="algorithmSwitcher">
+                                <RadioButton x:Name="ButtonBFS" IsChecked="True" FontSize="25" CharacterSpacing="5" CheckedChanged="algorithmSwitcher">
                                     <RadioButton.Content>
                                         <Label Text="В ширину" Margin="10,0,0,0" FontSize="15"/>
                                     </RadioButton.Content>
                                 </RadioButton>
-                                <RadioButton x:Name="DFS" IsChecked="False" FontSize="25" CharacterSpacing="5" CheckedChanged="algorithmSwitcher">
+                                <RadioButton x:Name="ButtonDFS" IsChecked="False" FontSize="25" CharacterSpacing="5" CheckedChanged="algorithmSwitcher">
                                     <RadioButton.Content>
                                         <Label Text="В глубину" Margin="10,0,0,0" FontSize="15"/>
                                     </RadioButton.Content>
@@ -72,8 +72,8 @@
             <Frame Grid.Column="2">
                 <VerticalStackLayout Spacing="20" Margin="20">
                     <Grid ColumnDefinitions="3*, 3*, 3*">
-                        <Label Grid.Column="0" Text="Номер" FontSize="20" HorizontalOptions="Center"/>
-                        <Label Grid.Column="1" Text="День" FontSize="20" HorizontalOptions="Center"/>
+                        <Label Grid.Column="0" Text="День" FontSize="20" HorizontalOptions="Center"/>
+                        <Label Grid.Column="1" Text="Номер" FontSize="20" HorizontalOptions="Center"/>
                         <Label Grid.Column="2" Text="Откуда" FontSize="20" HorizontalOptions="Center"/>
                     </Grid>
 
