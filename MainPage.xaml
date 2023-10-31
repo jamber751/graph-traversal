@@ -28,7 +28,6 @@
 
                     <Frame>
                         <VerticalStackLayout Spacing="20">
-
                             <Label Text="Начало обхода" FontSize="20" VerticalOptions="Center"/>
                             <Entry x:Name="beginningEntry" HorizontalOptions="Fill"/>
 
@@ -77,11 +76,9 @@
                         <Label Grid.Column="1" Text="День" FontSize="20" HorizontalOptions="Center"/>
                         <Label Grid.Column="2" Text="Откуда" FontSize="20" HorizontalOptions="Center"/>
                     </Grid>
-                    <Label x:Name="test"/>
 
                     <Grid x:Name="gridAnswer" ColumnDefinitions="3*,3*,3*" RowSpacing="20">
                     </Grid>
-
                 </VerticalStackLayout>
             </Frame>
 

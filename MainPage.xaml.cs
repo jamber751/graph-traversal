@@ -94,14 +94,15 @@ public partial class MainPage : ContentPage
     int mode = 0;
     int startID = 4;
     int dayCount = 1;
+    int algorithmID = 0;
 
     void algorithmSwitcher(System.Object sender, Microsoft.Maui.Controls.CheckedChangedEventArgs e)
     {
         RadioButton radiobutton = sender as RadioButton;
         if(radiobutton.IsChecked)
         {
-            if(radiobutton == BFS) nextStep.Clicked += nextStep_Clicked1;
-            if(radiobutton == DFS) nextStep.Clicked += nextStep_Clicked;
+            if (radiobutton == BFS) algorithmID = 0;
+            if (radiobutton == DFS) algorithmID = 1;
         }
     }
 
@@ -203,22 +204,37 @@ public partial class MainPage : ContentPage
         var graphView = this.graphDrawableView;
         var graphDrawable = (GraphDrawable)graphView.Drawable;
 
-        graphDrawable.resetNodes();
-        dayCount = 1;
+        int start = 0;
+        bool inputIsValid = int.TryParse(beginningEntry.Text, out start);
 
-        graphDrawable.currentIDs.Add(startID);
-        graphDrawable.Nodes[startID].dayVisited = dayCount;
-        graphDrawable.Nodes[startID].visitedFrom = -1;
-
-
-        //graphDrawable.currentID = startID;
-        //graphDrawable.visitedIDs.Add(startID);
-
-        addToGrid(graphDrawable.Nodes[startID]);
-
-        graphView.Invalidate();
-
-        switchMode(5);
+        if (inputIsValid && graphDrawable.Nodes.Keys.Contains(start))
+        {
+            graphDrawable.resetNodes();
+            dayCount = 1;
+            startID = start;
+            switchMode(5);
+            
+            switch(algorithmID)
+            {
+                case 0:
+                    graphDrawable.currentIDs.Add(startID);
+                    graphDrawable.Nodes[startID].dayVisited = dayCount;
+                    graphDrawable.Nodes[startID].visitedFrom = -1;
+                    nextStep.Clicked += BFS;
+                    break;
+                case 1:
+                    graphDrawable.currentID = startID;
+                    graphDrawable.visitedIDs.Add(startID);
+                    nextStep.Clicked += DFS;
+                    break;
+            }
+            addToGrid(graphDrawable.Nodes[startID]);
+            graphView.Invalidate();
+        }
+        else
+        {
+            DisplayAlert("Ошибка", "Неверное значение вершины", "Ok");
+        }
     }
 
 
@@ -237,7 +253,7 @@ public partial class MainPage : ContentPage
     }
 
 
-    void nextStep_Clicked1(System.Object sender, System.EventArgs e)
+    void DFS(System.Object sender, System.EventArgs e)
     {
         var graphView = this.graphDrawableView;
         var graphDrawable = (GraphDrawable)graphView.Drawable;
@@ -283,7 +299,7 @@ public partial class MainPage : ContentPage
     }
 
 
-    void nextStep_Clicked(System.Object sender, System.EventArgs e)
+    void BFS(System.Object sender, System.EventArgs e)
     {
         dayCount++;
 
