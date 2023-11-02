@@ -328,7 +328,7 @@ public partial class MainPage : ContentPage
 
     void TapGestureRecognizer_Tapped(System.Object sender, Microsoft.Maui.Controls.TappedEventArgs e)
     {
-        if (mode == 4 || mode == 5 || mode == 6) return;
+        if (mode > 3) return;
 
         Point? relativeToContainerPosition = e.GetPosition((View)sender);
         var graphView = this.graphDrawableView;
