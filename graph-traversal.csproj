@@ -55,4 +55,12 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="Graph\" />
+	  <None Remove="Drawable\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Graph\" />
+	  <Folder Include="Drawable\" />
+	</ItemGroup>
 </Project>

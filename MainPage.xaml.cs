@@ -1,92 +1,6 @@
 ﻿namespace graph_traversal;
-
-
-public class Node
-{
-    public int id { get; set; }
-    public float X { get; set; }
-    public float Y { get; set; }
-    public int? dayVisited { get; set; } = null;
-    public int? visitedFrom { get; set; } = null;
-}
-
-
-public class Link
-{
-    public int id1 { get; set; }
-    public int id2 { get; set; }
-}
-
-
-public abstract class BaseDrawable : IDrawable
-{
-    public abstract void Draw(ICanvas canvas, RectF dirtyRect);
-}
-
-
-public class GraphDrawable : BaseDrawable, IDrawable
-{
-    static int D = 50;
-    public int? selectedID { get; set; }
-
-    public Dictionary<int, Node> Nodes { get; set; } = new Dictionary<int, Node>();
-    public List<Link> Links { get; set; } = new List<Link>();
-
-    public HashSet<int> visitedIDs { get; set; } = new HashSet<int>();
-    public HashSet<int> currentIDs { get; set; } = new HashSet<int>();
-
-    public int? currentID { get; set; }
-
-    public override void Draw(ICanvas canvas, RectF dirtyRect)
-    {
-        foreach (Link link in Links)
-        {
-            canvas.StrokeColor = Colors.Red;
-            canvas.StrokeSize = 4;
-            canvas.DrawLine(Nodes[link.id1].X, Nodes[link.id1].Y, Nodes[link.id2].X, Nodes[link.id2].Y);
-        }
-
-        foreach (Node node in Nodes.Values)
-        {
-            if (node.id == selectedID)
-            {
-                canvas.FillColor = Color.FromArgb("#A8B5E0");
-            }
-            else
-            {
-                canvas.FillColor = Color.FromArgb("EAEEFA");
-            }
-
-            if (visitedIDs.Contains(node.id)) canvas.FillColor = Colors.Red;
-            if (currentIDs.Contains(node.id)) canvas.FillColor = Colors.Green;
-            if (currentID == node.id) canvas.FillColor = Colors.Green;
-
-
-            PathF path = new PathF();
-            path.AppendCircle(node.X, node.Y, D / 2);
-            canvas.StrokeColor = Colors.Red;
-            canvas.StrokeSize = 4;
-            canvas.FillPath(path);
-            canvas.DrawPath(path);
-            canvas.FontSize = 18;
-            canvas.DrawString($"{node.id}", node.X - D / 2, node.Y - D / 2, D, D, HorizontalAlignment.Center, VerticalAlignment.Center);
-        }
-    }
-
-
-    public void resetNodes()
-    {
-        foreach (Node node in Nodes.Values)
-        {
-            node.dayVisited = null;
-            node.visitedFrom = null;
-        }
-        currentIDs.Clear();
-        visitedIDs.Clear();
-        currentID = null;
-    }
-}
-
+using graph_traversal.Graph;
+using graph_traversal.Drawable;
 
 public partial class MainPage : ContentPage
 {
@@ -106,7 +20,6 @@ public partial class MainPage : ContentPage
         }
     }
 
-
     void nextStep_Clicked(System.Object sender, System.EventArgs e)
     {
         switch(algorithmID)
@@ -119,43 +32,6 @@ public partial class MainPage : ContentPage
                 break;
         }
     }
-
-
-    void addNodesMode_Clicked(System.Object sender, System.EventArgs e)
-    {
-        switchMode(0);
-    }
-
-
-    void addLinksMode_Clicked(System.Object sender, System.EventArgs e)
-    {
-        switchMode(1);
-    }
-
-
-    void removeNodesMode_Clicked(System.Object sender, System.EventArgs e)
-    {
-        switchMode(2);
-    }
-
-
-    void removeLinksMode_Clicked(System.Object sender, System.EventArgs e)
-    {
-        switchMode(3);
-    }
-
-
-    void acceptGraph_Clicked(System.Object sender, System.EventArgs e)
-    {
-        switchMode(4);
-    }
-
-
-    void editGraph_Clicked(System.Object sender, System.EventArgs e)
-    {
-        switchMode(0);
-    }
-
 
     void addToGrid(Node node)
     {
@@ -486,6 +362,41 @@ public partial class MainPage : ContentPage
                 resetAlgo.IsEnabled = true;
                 break;
         }
+    }
+
+    void addNodesMode_Clicked(System.Object sender, System.EventArgs e)
+    {
+        switchMode(0);
+    }
+
+
+    void addLinksMode_Clicked(System.Object sender, System.EventArgs e)
+    {
+        switchMode(1);
+    }
+
+
+    void removeNodesMode_Clicked(System.Object sender, System.EventArgs e)
+    {
+        switchMode(2);
+    }
+
+
+    void removeLinksMode_Clicked(System.Object sender, System.EventArgs e)
+    {
+        switchMode(3);
+    }
+
+
+    void acceptGraph_Clicked(System.Object sender, System.EventArgs e)
+    {
+        switchMode(4);
+    }
+
+
+    void editGraph_Clicked(System.Object sender, System.EventArgs e)
+    {
+        switchMode(0);
     }
 
     public MainPage()
