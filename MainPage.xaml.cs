@@ -61,6 +61,7 @@ public partial class MainPage : ContentPage
         {
             graphDrawable.resetNodes();
             dayCount = 1;
+            componentCount = 1;
             startID = start;
             switchMode(5);
 
