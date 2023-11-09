@@ -12,17 +12,17 @@ public partial class MainPage : ContentPage
 
     void algorithmSwitcher(System.Object sender, Microsoft.Maui.Controls.CheckedChangedEventArgs e)
     {
-        RadioButton radiobutton = sender as RadioButton;
-        if(radiobutton.IsChecked)
-        {
-            if (radiobutton == ButtonBFS) algorithmID = 0;
-            if (radiobutton == ButtonDFS) algorithmID = 1;
-        }
+        //RadioButton radiobutton = sender as RadioButton;
+        //if(radiobutton.IsChecked)
+        //{
+        //    if (radiobutton == ButtonBFS) algorithmID = 0;
+        //    if (radiobutton == ButtonDFS) algorithmID = 1;
+        //}
     }
 
     void nextStep_Clicked(System.Object sender, System.EventArgs e)
     {
-        switch(algorithmID)
+        switch (algorithmID)
         {
             case 0:
                 BFS();
@@ -32,6 +32,7 @@ public partial class MainPage : ContentPage
                 break;
         }
     }
+
 
     void addToGrid(Node node)
     {
@@ -61,8 +62,8 @@ public partial class MainPage : ContentPage
             dayCount = 1;
             startID = start;
             switchMode(5);
-            
-            switch(algorithmID)
+
+            switch (algorithmID)
             {
                 case 0:
                     graphDrawable.currentIDs.Add(startID);
@@ -105,6 +106,8 @@ public partial class MainPage : ContentPage
     {
         dayCount++;
 
+        bool nodeFound = false;
+
         var graphView = this.graphDrawableView;
         var graphDrawable = (GraphDrawable)graphView.Drawable;
 
@@ -124,6 +127,7 @@ public partial class MainPage : ContentPage
                     graphDrawable.Nodes[link.id2].visitedFrom = id;
                     graphDrawable.Nodes[link.id2].dayVisited = dayCount;
                     addToGrid(graphDrawable.Nodes[link.id2]);
+                    nodeFound = true;
                 }
                 else if (link.id2 == id && !graphDrawable.visitedIDs.Contains(link.id1) && !graphDrawable.currentIDs.Contains(link.id1))
                 {
@@ -131,10 +135,25 @@ public partial class MainPage : ContentPage
                     graphDrawable.Nodes[link.id1].visitedFrom = id;
                     graphDrawable.Nodes[link.id1].dayVisited = dayCount;
                     addToGrid(graphDrawable.Nodes[link.id1]);
+                    nodeFound = true;
                 }
             }
         }
+
+        if (!nodeFound)
+        {
+            foreach (Node node in graphDrawable.Nodes.Values)
+            {
+                if (!graphDrawable.visitedIDs.Contains(node.id))
+                {
+                    graphDrawable.currentIDs.Add(node.id);
+                    break;
+                }
+            }
+        }
+
         graphView.Invalidate();
+
         if (graphDrawable.visitedIDs.Count + graphDrawable.currentIDs.Count == graphDrawable.Nodes.Count)
         {
             DisplayAlert("Успех", "Обход графа завершен", "Ok");
@@ -281,12 +300,10 @@ public partial class MainPage : ContentPage
                             }
                         }
 
-                        foreach (Link link in linksToRemove)
-                        {
-                            graphDrawable.Links.Remove(link);
-                        }
+                        foreach (Link link in linksToRemove) graphDrawable.Links.Remove(link);
 
                         graphDrawable.Nodes.Remove(node.id);
+
                         graphView.Invalidate();
                     }
                 }

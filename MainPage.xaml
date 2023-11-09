@@ -31,9 +31,9 @@
                             <Label Text="Начало обхода" FontSize="20" VerticalOptions="Center"/>
                             <Entry x:Name="beginningEntry" HorizontalOptions="Fill"/>
 
-                            <Label Text="Способ обхода" HorizontalOptions="Start" FontSize="20"/>
+                            <!--<Label Text="Способ обхода" HorizontalOptions="Start" FontSize="20"/>-->
 
-                            <VerticalStackLayout x:Name="algoSelector" HorizontalOptions="Start">
+                            <!--<VerticalStackLayout x:Name="algoSelector" HorizontalOptions="Start">
                                 <RadioButton x:Name="ButtonBFS" IsChecked="True" FontSize="25" CharacterSpacing="5" CheckedChanged="algorithmSwitcher">
                                     <RadioButton.Content>
                                         <Label Text="В ширину" Margin="10,0,0,0" FontSize="15"/>
@@ -44,7 +44,7 @@
                                         <Label Text="В глубину" Margin="10,0,0,0" FontSize="15"/>
                                     </RadioButton.Content>
                                 </RadioButton>
-                            </VerticalStackLayout>
+                            </VerticalStackLayout>-->
 
                             <Grid ColumnDefinitions="5*, 5*" ColumnSpacing="10">
                                 <Button x:Name="startAlgo" Text="Начать обход" Clicked="startAlgo_Clicked" IsEnabled="False" Grid.Column="0"/>
@@ -73,11 +73,11 @@
                 <VerticalStackLayout Spacing="20" Margin="20">
                     <Grid ColumnDefinitions="3*, 3*, 3*">
                         <Label Grid.Column="0" Text="День" FontSize="20" HorizontalOptions="Center"/>
-                        <Label Grid.Column="1" Text="Номер" FontSize="20" HorizontalOptions="Center"/>
-                        <Label Grid.Column="2" Text="Откуда" FontSize="20" HorizontalOptions="Center"/>
+                        <Label Grid.Column="1" Text="Узел" FontSize="20" HorizontalOptions="Center"/>
+                        <Label Grid.Column="2" Text="Компонент" FontSize="20" HorizontalOptions="Center"/>
                     </Grid>
 
-                    <Grid x:Name="gridAnswer" ColumnDefinitions="3*,3*,3*" RowSpacing="20">
+                    <Grid x:Name="gridAnswer" ColumnDefinitions="3*, 3*, 3*" RowSpacing="20">
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
