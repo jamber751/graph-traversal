@@ -8,6 +8,7 @@ public partial class MainPage : ContentPage
     int mode = 0;
     int startID = 4;
     int dayCount = 1;
+    int componentCount = 1;
     int algorithmID = 0;
 
     void algorithmSwitcher(System.Object sender, Microsoft.Maui.Controls.CheckedChangedEventArgs e)
@@ -40,7 +41,7 @@ public partial class MainPage : ContentPage
 
         Label label1 = new Label() { Text = node.id.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20 };
         Label label2 = new Label() { Text = node.dayVisited.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20 };
-        Label label3 = new Label() { Text = node.visitedFrom.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20 };
+        Label label3 = new Label() { Text = node.componentID.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20 };
 
         gridAnswer.Add(label1, 1, gridAnswer.RowDefinitions.Count - 1);
         gridAnswer.Add(label2, 0, gridAnswer.RowDefinitions.Count - 1);
@@ -68,7 +69,7 @@ public partial class MainPage : ContentPage
                 case 0:
                     graphDrawable.currentIDs.Add(startID);
                     graphDrawable.Nodes[startID].dayVisited = dayCount;
-                    graphDrawable.Nodes[startID].visitedFrom = -1;
+                    graphDrawable.Nodes[startID].componentID = componentCount;
                     break;
                 case 1:
                     graphDrawable.currentID = startID;
@@ -124,7 +125,7 @@ public partial class MainPage : ContentPage
                 if (link.id1 == id && !graphDrawable.visitedIDs.Contains(link.id2) && !graphDrawable.currentIDs.Contains(link.id2))
                 {
                     graphDrawable.currentIDs.Add(link.id2);
-                    graphDrawable.Nodes[link.id2].visitedFrom = id;
+                    graphDrawable.Nodes[link.id2].componentID = componentCount;
                     graphDrawable.Nodes[link.id2].dayVisited = dayCount;
                     addToGrid(graphDrawable.Nodes[link.id2]);
                     nodeFound = true;
@@ -132,7 +133,7 @@ public partial class MainPage : ContentPage
                 else if (link.id2 == id && !graphDrawable.visitedIDs.Contains(link.id1) && !graphDrawable.currentIDs.Contains(link.id1))
                 {
                     graphDrawable.currentIDs.Add(link.id1);
-                    graphDrawable.Nodes[link.id1].visitedFrom = id;
+                    graphDrawable.Nodes[link.id1].componentID = componentCount;
                     graphDrawable.Nodes[link.id1].dayVisited = dayCount;
                     addToGrid(graphDrawable.Nodes[link.id1]);
                     nodeFound = true;
@@ -147,6 +148,9 @@ public partial class MainPage : ContentPage
                 if (!graphDrawable.visitedIDs.Contains(node.id))
                 {
                     graphDrawable.currentIDs.Add(node.id);
+                    node.componentID = ++componentCount;
+                    node.dayVisited = dayCount;
+                    addToGrid(node);
                     break;
                 }
             }

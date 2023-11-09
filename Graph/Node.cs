@@ -8,6 +8,7 @@ namespace graph_traversal.Graph
         public float Y { get; set; }
         public int? dayVisited { get; set; } = null;
         public int? visitedFrom { get; set; } = null;
+        public int? componentID { get; set; } = null;
     }
 }
 
