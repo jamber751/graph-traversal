@@ -16,13 +16,13 @@ namespace graph_traversal.Drawable
 
         public int? currentID { get; set; }
 
-        private List<Color> ColorList = new List<Color>() { Colors.IndianRed, Colors.SteelBlue, Colors.Tomato, Colors.LightSalmon };
+        public List<Color> ColorList = new List<Color>() { Colors.IndianRed, Colors.SteelBlue, Colors.Tomato, Colors.LightSalmon };
 
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
             foreach (Link link in Links)
             {
-                canvas.StrokeColor = Colors.Red;
+                canvas.StrokeColor = Colors.IndianRed;
                 canvas.StrokeSize = 4;
                 canvas.DrawLine(Nodes[link.id1].X, Nodes[link.id1].Y, Nodes[link.id2].X, Nodes[link.id2].Y);
             }
@@ -39,7 +39,7 @@ namespace graph_traversal.Drawable
                 }
 
                 if (visitedIDs.Contains(node.id)) canvas.FillColor = ColorList[(int)node.componentID - 1];
-                if (currentIDs.Contains(node.id)) canvas.FillColor = Colors.MediumAquamarine;
+                if (currentIDs.Contains(node.id)) canvas.FillColor = Colors.Green;
                 if (currentID == node.id) canvas.FillColor = Colors.Green;
 
 

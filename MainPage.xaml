@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:drawable="clr-namespace:graph_traversal.Drawable"
-             x:Class="graph_traversal.MainPage">
+             x:Class="graph_traversal.MainPage"
+             Shell.NavBarIsVisible="False">
 
     <ContentPage.Resources>
         <drawable:GraphDrawable x:Key="drawable" />
@@ -10,10 +11,17 @@
 
     <VerticalStackLayout Margin="20">
 
-        <Grid ColumnDefinitions="2*, 6*, 2*" ColumnSpacing="10" RowSpacing="10">
+        <Grid ColumnDefinitions="15*, 65*, 20*" ColumnSpacing="10" RowSpacing="10">
 
             <Frame Grid.Column="0">
                 <VerticalStackLayout Spacing="20">
+                    <Frame>
+                        <Grid ColumnDefinitions="5*,5*" ColumnSpacing="10">
+                            <Button Grid.Column="0" x:Name="loadGraph" Text="Загрузить"/>
+                            <Button Grid.Column="1" x:Name="saveGraph" Text="Сохранить"/>
+                        </Grid>
+                    </Frame>
+
                     <Frame>
                         <VerticalStackLayout x:Name="canvasButtons" Spacing="20">
                             <Button x:Name="addNodesMode" Text="Добавить вершины" Clicked="addNodesMode_Clicked" IsEnabled="False"/>
@@ -21,8 +29,6 @@
                             <Button x:Name="removeNodesMode" Text="Удалить вершины" Clicked="removeNodesMode_Clicked" IsEnabled="True"/>
                             <Button x:Name="removeLinksMode" Text="Отсоединить вершины" Clicked="removeLinksMode_Clicked" IsEnabled="True"/>
                             <Button x:Name="clearCanvas" Text="Очистить полотно" Clicked="clearCanvas_Clicked"/>
-
-                            <Button x:Name="acceptGraph" Text="Готово" VerticalOptions="End" Clicked="acceptGraph_Clicked" />
                         </VerticalStackLayout>
                     </Frame>
 
@@ -47,12 +53,11 @@
                             </VerticalStackLayout>-->
 
                             <Grid ColumnDefinitions="5*, 5*" ColumnSpacing="10">
-                                <Button x:Name="startAlgo" Text="Начать обход" Clicked="startAlgo_Clicked" IsEnabled="False" Grid.Column="0"/>
-                                <Button x:Name="nextStep" Text="Следующий шаг" Clicked="nextStep_Clicked" IsEnabled="False" Grid.Column="1"/>
+                                <Button x:Name="startAlgo" Text="Начало" Clicked="startAlgo_Clicked" IsEnabled="True" Grid.Column="0"/>
+                                <Button x:Name="nextStep" Text="Шаг" Clicked="nextStep_Clicked" IsEnabled="False" Grid.Column="1"/>
                             </Grid>
 
                             <Button x:Name="resetAlgo" Text="Сбросить" Clicked="resetAlgo_Clicked" IsEnabled="False"/>
-                            <Button x:Name="editGraph" Text="Редактировать граф" Clicked="editGraph_Clicked" IsEnabled="False"/>
                         </VerticalStackLayout>
                     </Frame>
 

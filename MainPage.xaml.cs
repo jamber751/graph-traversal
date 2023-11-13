@@ -11,6 +11,7 @@ public partial class MainPage : ContentPage
     int componentCount = 1;
     int algorithmID = 0;
 
+
     void algorithmSwitcher(System.Object sender, Microsoft.Maui.Controls.CheckedChangedEventArgs e)
     {
         //RadioButton radiobutton = sender as RadioButton;
@@ -21,86 +22,22 @@ public partial class MainPage : ContentPage
         //}
     }
 
-    void nextStep_Clicked(System.Object sender, System.EventArgs e)
-    {
-        switch (algorithmID)
-        {
-            case 0:
-                BFS();
-                break;
-            case 1:
-                DFS();
-                break;
-        }
-    }
-
 
     void addToGrid(Node node)
     {
+
+        var graphView = this.graphDrawableView;
+        var graphDrawable = (GraphDrawable)graphView.Drawable;
+
         gridAnswer.AddRowDefinition(new RowDefinition());
 
-        Label label1 = new Label() { Text = node.id.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20 };
-        Label label2 = new Label() { Text = node.dayVisited.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20 };
-        Label label3 = new Label() { Text = node.componentID.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20 };
+        Label label1 = new Label() { Text = node.id.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20, TextColor = graphDrawable.ColorList[(int)node.componentID - 1] };
+        Label label2 = new Label() { Text = node.dayVisited.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20, TextColor = graphDrawable.ColorList[(int)node.componentID - 1] };
+        Label label3 = new Label() { Text = node.componentID.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20, TextColor = graphDrawable.ColorList[(int)node.componentID - 1] };
 
         gridAnswer.Add(label1, 1, gridAnswer.RowDefinitions.Count - 1);
         gridAnswer.Add(label2, 0, gridAnswer.RowDefinitions.Count - 1);
         gridAnswer.Add(label3, 2, gridAnswer.RowDefinitions.Count - 1);
-    }
-
-
-    void startAlgo_Clicked(System.Object sender, System.EventArgs e)
-    {
-        var graphView = this.graphDrawableView;
-        var graphDrawable = (GraphDrawable)graphView.Drawable;
-
-        int start = 0;
-        bool inputIsValid = int.TryParse(beginningEntry.Text, out start);
-
-        if (inputIsValid && graphDrawable.Nodes.Keys.Contains(start))
-        {
-            graphDrawable.resetNodes();
-            dayCount = 1;
-            componentCount = 1;
-            startID = start;
-            switchMode(5);
-
-            switch (algorithmID)
-            {
-                case 0:
-                    graphDrawable.currentIDs.Add(startID);
-                    graphDrawable.Nodes[startID].dayVisited = dayCount;
-                    graphDrawable.Nodes[startID].componentID = componentCount;
-                    break;
-                case 1:
-                    graphDrawable.currentID = startID;
-                    graphDrawable.visitedIDs.Add(startID);
-                    graphDrawable.Nodes[startID].dayVisited = dayCount;
-                    graphDrawable.Nodes[startID].visitedFrom = -1;
-                    break;
-            }
-            addToGrid(graphDrawable.Nodes[startID]);
-            graphView.Invalidate();
-        }
-        else
-        {
-            DisplayAlert("Ошибка", "Неверное значение вершины", "Ok");
-        }
-    }
-
-
-    void resetAlgo_Clicked(System.Object sender, System.EventArgs e)
-    {
-        dayCount = 1;
-        var graphView = this.graphDrawableView;
-        var graphDrawable = (GraphDrawable)graphView.Drawable;
-        graphDrawable.resetNodes();
-        graphView.Invalidate();
-
-        gridAnswer.Children.Clear();
-        gridAnswer.RowDefinitions.Clear();
-
-        switchMode(4);
     }
 
 
@@ -348,7 +285,8 @@ public partial class MainPage : ContentPage
     void switchMode(int num)
     {
         foreach (Button button in canvasButtons.Children) button.IsEnabled = true;
-        nextStep.IsEnabled = startAlgo.IsEnabled = resetAlgo.IsEnabled = editGraph.IsEnabled = false;
+        nextStep.IsEnabled = resetAlgo.IsEnabled = false;
+        startAlgo.IsEnabled = saveGraph.IsEnabled = loadGraph.IsEnabled = true;
 
         switch (num)
         {
@@ -368,23 +306,89 @@ public partial class MainPage : ContentPage
                 removeLinksMode.IsEnabled = false;
                 mode = 3;
                 break;
-            case 4:
-                foreach (Button button in canvasButtons.Children) button.IsEnabled = false;
-                startAlgo.IsEnabled = true;
-                editGraph.IsEnabled = true;
-                mode = 4;
-                break;
             case 5:
                 foreach (Button button in canvasButtons.Children) button.IsEnabled = false;
+                saveGraph.IsEnabled = loadGraph.IsEnabled = false;
                 nextStep.IsEnabled = true;
                 resetAlgo.IsEnabled = true;
                 break;
             case 6:
                 foreach (Button button in canvasButtons.Children) button.IsEnabled = false;
+                saveGraph.IsEnabled = loadGraph.IsEnabled = false;
                 resetAlgo.IsEnabled = true;
                 break;
         }
     }
+
+
+    void startAlgo_Clicked(System.Object sender, System.EventArgs e)
+    {
+        var graphView = this.graphDrawableView;
+        var graphDrawable = (GraphDrawable)graphView.Drawable;
+
+        int start = 0;
+        bool inputIsValid = int.TryParse(beginningEntry.Text, out start);
+
+        if (inputIsValid && graphDrawable.Nodes.Keys.Contains(start))
+        {
+            graphDrawable.resetNodes();
+            dayCount = 1;
+            componentCount = 1;
+            startID = start;
+            switchMode(5);
+
+            switch (algorithmID)
+            {
+                case 0:
+                    graphDrawable.currentIDs.Add(startID);
+                    graphDrawable.Nodes[startID].dayVisited = dayCount;
+                    graphDrawable.Nodes[startID].componentID = componentCount;
+                    break;
+                case 1:
+                    graphDrawable.currentID = startID;
+                    graphDrawable.visitedIDs.Add(startID);
+                    graphDrawable.Nodes[startID].dayVisited = dayCount;
+                    graphDrawable.Nodes[startID].visitedFrom = -1;
+                    break;
+            }
+            addToGrid(graphDrawable.Nodes[startID]);
+            graphView.Invalidate();
+        }
+        else
+        {
+            DisplayAlert("Ошибка", "Неверное значение вершины", "Ok");
+        }
+    }
+
+
+    void resetAlgo_Clicked(System.Object sender, System.EventArgs e)
+    {
+        dayCount = 1;
+        var graphView = this.graphDrawableView;
+        var graphDrawable = (GraphDrawable)graphView.Drawable;
+        graphDrawable.resetNodes();
+        graphView.Invalidate();
+
+        gridAnswer.Children.Clear();
+        gridAnswer.RowDefinitions.Clear();
+
+        switchMode(0);
+    }
+
+
+    void nextStep_Clicked(System.Object sender, System.EventArgs e)
+    {
+        switch (algorithmID)
+        {
+            case 0:
+                BFS();
+                break;
+            case 1:
+                DFS();
+                break;
+        }
+    }
+
 
     void addNodesMode_Clicked(System.Object sender, System.EventArgs e)
     {
@@ -409,17 +413,6 @@ public partial class MainPage : ContentPage
         switchMode(3);
     }
 
-
-    void acceptGraph_Clicked(System.Object sender, System.EventArgs e)
-    {
-        switchMode(4);
-    }
-
-
-    void editGraph_Clicked(System.Object sender, System.EventArgs e)
-    {
-        switchMode(0);
-    }
 
     public MainPage()
     {
