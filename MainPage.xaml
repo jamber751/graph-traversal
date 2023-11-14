@@ -17,8 +17,8 @@
                 <VerticalStackLayout Spacing="20">
                     <Frame>
                         <Grid ColumnDefinitions="5*,5*" ColumnSpacing="10">
-                            <Button Grid.Column="0" x:Name="loadGraph" Text="Загрузить"/>
-                            <Button Grid.Column="1" x:Name="saveGraph" Text="Сохранить"/>
+                            <Button Grid.Column="0" x:Name="loadGraph" Text="Загрузить" Clicked="loadGraph_Clicked"/>
+                            <Button Grid.Column="1" x:Name="saveGraph" Text="Сохранить" Clicked="saveGraph_Clicked"/>
                         </Grid>
                     </Frame>
 
@@ -81,9 +81,10 @@
                         <Label Grid.Column="1" Text="Узел" FontSize="20" HorizontalOptions="Center"/>
                         <Label Grid.Column="2" Text="Компонент" FontSize="20" HorizontalOptions="Center"/>
                     </Grid>
-
-                    <Grid x:Name="gridAnswer" ColumnDefinitions="3*, 3*, 3*" RowSpacing="20">
-                    </Grid>
+                    <ScrollView MaximumHeightRequest="800">
+                        <Grid x:Name="gridAnswer" ColumnDefinitions="3*, 3*, 3*" RowSpacing="20">
+                        </Grid>
+                    </ScrollView>
                 </VerticalStackLayout>
             </Frame>
 

@@ -1,6 +1,7 @@
 ﻿namespace graph_traversal;
 using graph_traversal.Graph;
 using graph_traversal.Drawable;
+using System.Text.Json;
 
 public partial class MainPage : ContentPage
 {
@@ -417,5 +418,49 @@ public partial class MainPage : ContentPage
     public MainPage()
     {
         InitializeComponent();
+    }
+
+    async void loadGraph_Clicked(System.Object sender, System.EventArgs e)
+    {
+        var graphView = this.graphDrawableView;
+        var graphDrawable = (GraphDrawable)graphView.Drawable;
+        try
+        {
+            var result = await FilePicker.Default.PickAsync();
+            if (result != null)
+            {
+                graphDrawable.resetNodes();
+
+                GraphJsonObject jsonobject;
+
+                using (StreamReader r = new StreamReader(result.FullPath))
+                {
+                    string json = r.ReadToEnd();
+                    jsonobject = JsonSerializer.Deserialize<GraphJsonObject>(json);
+                }
+
+                graphDrawable.Nodes = jsonobject.Nodes;
+                graphDrawable.Links = jsonobject.Links;
+                count = graphDrawable.Nodes.Count + 1;
+                graphView.Invalidate();
+            }
+        }
+        catch (Exception ex)
+        {
+        }
+    }
+
+
+
+    void saveGraph_Clicked(System.Object sender, System.EventArgs e)
+    {
+        var graphView = this.graphDrawableView;
+        var graphDrawable = (GraphDrawable)graphView.Drawable;
+
+        GraphJsonObject jsonObject = new GraphJsonObject() { Nodes = graphDrawable.Nodes, Links = graphDrawable.Links };
+
+        string fileName = "/Users/jrrrrr/Desktop/graph.json";
+        string jsonString = JsonSerializer.Serialize(jsonObject);
+        File.WriteAllText(fileName, jsonString);
     }
 }
