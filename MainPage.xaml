@@ -11,8 +11,7 @@
 
     <VerticalStackLayout Margin="20">
 
-        <Grid ColumnDefinitions="15*, 65*, 20*" ColumnSpacing="10" RowSpacing="10">
-
+        <Grid ColumnDefinitions="15*, 85*" ColumnSpacing="10" RowSpacing="10">
             <Frame Grid.Column="0">
                 <VerticalStackLayout Spacing="20">
                     <Frame>
@@ -37,9 +36,9 @@
                             <Label Text="Начало обхода" FontSize="20" VerticalOptions="Center"/>
                             <Entry x:Name="beginningEntry" HorizontalOptions="Fill"/>
 
-                            <!--<Label Text="Способ обхода" HorizontalOptions="Start" FontSize="20"/>-->
+                            <Label Text="Способ обхода" HorizontalOptions="Start" FontSize="20"/>
 
-                            <!--<VerticalStackLayout x:Name="algoSelector" HorizontalOptions="Start">
+                            <VerticalStackLayout x:Name="algoSelector" HorizontalOptions="Start">
                                 <RadioButton x:Name="ButtonBFS" IsChecked="True" FontSize="25" CharacterSpacing="5" CheckedChanged="algorithmSwitcher">
                                     <RadioButton.Content>
                                         <Label Text="В ширину" Margin="10,0,0,0" FontSize="15"/>
@@ -50,7 +49,7 @@
                                         <Label Text="В глубину" Margin="10,0,0,0" FontSize="15"/>
                                     </RadioButton.Content>
                                 </RadioButton>
-                            </VerticalStackLayout>-->
+                            </VerticalStackLayout>
 
                             <Grid ColumnDefinitions="5*, 5*" ColumnSpacing="10">
                                 <Button x:Name="startAlgo" Text="Начало" Clicked="startAlgo_Clicked" IsEnabled="True" Grid.Column="0"/>
@@ -67,14 +66,15 @@
             <Frame Grid.Column="1">
                 <GraphicsView x:Name="graphDrawableView" Drawable="{StaticResource drawable}" BackgroundColor="#EAEEFA"
                       HeightRequest="900"
-                      WidthRequest="1220">
+                      WidthRequest="1500"
+                      HorizontalOptions="Center">
                     <GraphicsView.GestureRecognizers>
                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
                     </GraphicsView.GestureRecognizers>
                 </GraphicsView>
             </Frame>
 
-            <Frame Grid.Column="2">
+            <!--<Frame Grid.Column="2">
                 <VerticalStackLayout Spacing="20" Margin="20">
                     <Grid ColumnDefinitions="3*, 3*, 3*">
                         <Label Grid.Column="0" Text="День" FontSize="20" HorizontalOptions="Center"/>
@@ -86,7 +86,7 @@
                         </Grid>
                     </ScrollView>
                 </VerticalStackLayout>
-            </Frame>
+            </Frame>-->
 
         </Grid>
 

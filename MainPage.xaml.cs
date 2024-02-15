@@ -15,31 +15,31 @@ public partial class MainPage : ContentPage
 
     void algorithmSwitcher(System.Object sender, Microsoft.Maui.Controls.CheckedChangedEventArgs e)
     {
-        //RadioButton radiobutton = sender as RadioButton;
-        //if(radiobutton.IsChecked)
-        //{
-        //    if (radiobutton == ButtonBFS) algorithmID = 0;
-        //    if (radiobutton == ButtonDFS) algorithmID = 1;
-        //}
+        RadioButton radiobutton = sender as RadioButton;
+        if (radiobutton.IsChecked)
+        {
+            if (radiobutton == ButtonBFS) algorithmID = 0;
+            if (radiobutton == ButtonDFS) algorithmID = 1;
+        }
     }
 
 
-    void addToGrid(Node node)
-    {
+    //void addToGrid(Node node)
+    //{
 
-        var graphView = this.graphDrawableView;
-        var graphDrawable = (GraphDrawable)graphView.Drawable;
+    //    var graphView = this.graphDrawableView;
+    //    var graphDrawable = (GraphDrawable)graphView.Drawable;
 
-        gridAnswer.AddRowDefinition(new RowDefinition());
+    //    gridAnswer.AddRowDefinition(new RowDefinition());
 
-        Label label1 = new Label() { Text = node.id.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20, TextColor = graphDrawable.ColorList[(int)node.componentID - 1] };
-        Label label2 = new Label() { Text = node.dayVisited.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20, TextColor = graphDrawable.ColorList[(int)node.componentID - 1] };
-        Label label3 = new Label() { Text = node.componentID.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20, TextColor = graphDrawable.ColorList[(int)node.componentID - 1] };
+    //    Label label1 = new Label() { Text = node.id.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20, TextColor = graphDrawable.ColorList[(int)node.componentID - 1] };
+    //    Label label2 = new Label() { Text = node.dayVisited.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20, TextColor = graphDrawable.ColorList[(int)node.componentID - 1] };
+    //    Label label3 = new Label() { Text = node.componentID.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20, TextColor = graphDrawable.ColorList[(int)node.componentID - 1] };
 
-        gridAnswer.Add(label1, 1, gridAnswer.RowDefinitions.Count - 1);
-        gridAnswer.Add(label2, 0, gridAnswer.RowDefinitions.Count - 1);
-        gridAnswer.Add(label3, 2, gridAnswer.RowDefinitions.Count - 1);
-    }
+    //    gridAnswer.Add(label1, 1, gridAnswer.RowDefinitions.Count - 1);
+    //    gridAnswer.Add(label2, 0, gridAnswer.RowDefinitions.Count - 1);
+    //    gridAnswer.Add(label3, 2, gridAnswer.RowDefinitions.Count - 1);
+    //}
 
 
     void BFS()
@@ -66,7 +66,7 @@ public partial class MainPage : ContentPage
                     graphDrawable.currentIDs.Add(link.id2);
                     graphDrawable.Nodes[link.id2].componentID = componentCount;
                     graphDrawable.Nodes[link.id2].dayVisited = dayCount;
-                    addToGrid(graphDrawable.Nodes[link.id2]);
+                    //addToGrid(graphDrawable.Nodes[link.id2]);
                     nodeFound = true;
                 }
                 else if (link.id2 == id && !graphDrawable.visitedIDs.Contains(link.id1) && !graphDrawable.currentIDs.Contains(link.id1))
@@ -74,7 +74,7 @@ public partial class MainPage : ContentPage
                     graphDrawable.currentIDs.Add(link.id1);
                     graphDrawable.Nodes[link.id1].componentID = componentCount;
                     graphDrawable.Nodes[link.id1].dayVisited = dayCount;
-                    addToGrid(graphDrawable.Nodes[link.id1]);
+                    //addToGrid(graphDrawable.Nodes[link.id1]);
                     nodeFound = true;
                 }
             }
@@ -89,7 +89,7 @@ public partial class MainPage : ContentPage
                     graphDrawable.currentIDs.Add(node.id);
                     node.componentID = ++componentCount;
                     node.dayVisited = dayCount;
-                    addToGrid(node);
+                    //addToGrid(node);
                     break;
                 }
             }
@@ -109,7 +109,6 @@ public partial class MainPage : ContentPage
     {
         var graphView = this.graphDrawableView;
         var graphDrawable = (GraphDrawable)graphView.Drawable;
-
         bool newNodeFound = false;
 
         foreach (Link link in graphDrawable.Links)
@@ -121,7 +120,7 @@ public partial class MainPage : ContentPage
                 graphDrawable.Nodes[link.id2].visitedFrom = link.id1;
                 graphDrawable.Nodes[link.id2].dayVisited = ++dayCount;
                 newNodeFound = true;
-                addToGrid(graphDrawable.Nodes[link.id2]);
+                //addToGrid(graphDrawable.Nodes[link.id2]);
                 break;
             }
             else if (link.id2 == graphDrawable.currentID && !graphDrawable.visitedIDs.Contains(link.id1))
@@ -131,7 +130,7 @@ public partial class MainPage : ContentPage
                 graphDrawable.Nodes[link.id1].visitedFrom = link.id2;
                 graphDrawable.Nodes[link.id1].dayVisited = ++dayCount;
                 newNodeFound = true;
-                addToGrid(graphDrawable.Nodes[link.id1]);
+                //addToGrid(graphDrawable.Nodes[link.id1]);
                 break;
             }
         }
@@ -352,7 +351,7 @@ public partial class MainPage : ContentPage
                     graphDrawable.Nodes[startID].visitedFrom = -1;
                     break;
             }
-            addToGrid(graphDrawable.Nodes[startID]);
+            //addToGrid(graphDrawable.Nodes[startID]);
             graphView.Invalidate();
         }
         else
@@ -370,8 +369,8 @@ public partial class MainPage : ContentPage
         graphDrawable.resetNodes();
         graphView.Invalidate();
 
-        gridAnswer.Children.Clear();
-        gridAnswer.RowDefinitions.Clear();
+        //gridAnswer.Children.Clear();
+        //gridAnswer.RowDefinitions.Clear();
 
         switchMode(0);
     }

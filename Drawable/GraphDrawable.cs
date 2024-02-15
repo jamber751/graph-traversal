@@ -38,7 +38,7 @@ namespace graph_traversal.Drawable
                     canvas.FillColor = Color.FromArgb("EAEEFA");
                 }
 
-                if (visitedIDs.Contains(node.id)) canvas.FillColor = ColorList[(int)node.componentID - 1];
+                if (visitedIDs.Contains(node.id)) canvas.FillColor = ColorList[0];
                 if (currentIDs.Contains(node.id)) canvas.FillColor = Colors.Green;
                 if (currentID == node.id) canvas.FillColor = Colors.Green;
 
@@ -67,8 +67,6 @@ namespace graph_traversal.Drawable
             visitedIDs.Clear();
             currentID = null;
         }
-
-
     }
 }
 
