@@ -5,13 +5,146 @@ using System.Text.Json;
 
 public partial class MainPage : ContentPage
 {
-    int count = 1;
     int mode = 0;
-    int startID = 4;
-    int dayCount = 1;
-    int componentCount = 1;
+    int startID = 0;
+    int endID = 0;
     int algorithmID = 0;
 
+    int[,] matrix;
+
+    void nextStep_Clicked(System.Object sender, System.EventArgs e)
+    {
+        var graphView = this.graphDrawableView;
+        var graphDrawable = (GraphDrawable)graphView.Drawable;
+        graphDrawable.Kruskal();
+        graphView.Invalidate();
+
+        int[,] matrix1 = new int[matrix.GetLength(0), matrix.GetLength(1) + 1];
+
+        for (int i = 0; i < matrix.GetLength(0); i++)
+        {
+            for (int j = 0; j < matrix.GetLength(1); j++)
+            {
+                matrix1[i, j] = matrix[i, j];
+            }
+        }
+
+        for (int i = 0; i < matrix.GetLength(0); i++)
+        {
+            matrix1[i, matrix.GetLength(1)] = graphDrawable.Links[i].marker;
+        }
+        matrix = matrix1;
+
+
+        if (graphDrawable.isFinished())
+        {
+            DisplayAlert("Успех", "Обход графа завершен", "Ok");
+            switchMode(6);
+
+
+            using (StreamWriter writer = new StreamWriter("/Users/jrrrrr/Desktop/table.csv"))
+            {
+                int rows = matrix.GetLength(0);
+                int columns = matrix.GetLength(1);
+
+                for (int i = 0; i < rows; i++)
+                {
+                    for (int j = 0; j < columns; j++)
+                    {
+                        writer.Write(matrix[i, j]);
+
+                        if (j < columns - 1)
+                        {
+                            writer.Write(",");
+                        }
+                    }
+                    writer.WriteLine();
+                }
+            }
+        }
+    }
+
+
+    void startAlgo_Clicked(System.Object sender, System.EventArgs e)
+    {
+        var graphView = this.graphDrawableView;
+        var graphDrawable = (GraphDrawable)graphView.Drawable;
+
+        bool beginningIsValid = Int32.TryParse("1", out startID);
+
+        if (beginningIsValid && graphDrawable.Nodes.Keys.Contains(startID))
+        {
+            graphDrawable.resetNodes();
+            graphDrawable.QuickSortLinks(0, graphDrawable.Links.Count - 1);
+
+            matrix = new int[graphDrawable.Links.Count, 4];
+            for (int i = 0; i < graphDrawable.Links.Count; i++)
+            {
+                matrix[i, 0] = graphDrawable.Links[i].id1;
+                matrix[i, 1] = graphDrawable.Links[i].id2;
+                matrix[i, 2] = (int)graphDrawable.Links[i].weight;
+                matrix[i, 3] = (int)graphDrawable.Links[i].marker;
+            }
+
+            switchMode(5);
+            switch (algorithmID)
+            {
+                case 0:
+                    graphDrawable.currentID = startID;
+                    graphDrawable.Nodes[startID].weightSum = 0;
+                    graphDrawable.Nodes[startID].visitedFrom = 0;
+                    break;
+                case 1:
+                    graphDrawable.currentID = startID;
+                    graphDrawable.visitedIDs.Add(startID);
+                    graphDrawable.Nodes[startID].dayVisited = graphDrawable.dayCount;
+                    graphDrawable.Nodes[startID].visitedFrom = -1;
+                    break;
+            }
+            addToGrid(graphDrawable.Nodes[startID]);
+            graphView.Invalidate();
+        }
+        else
+        {
+            DisplayAlert("Ошибка", "Неверное значение вершины", "Ok");
+        }
+    }
+
+
+    void Dijkstra()
+    {
+        var graphView = this.graphDrawableView;
+        var graphDrawable = (GraphDrawable)graphView.Drawable;
+        graphDrawable.Dijkstra();
+
+        graphView.Invalidate();
+
+        //List<Node> nodesList = graphDrawable.Nodes.Values.ToList();
+        //resultListView.ItemsSource = graphDrawable.Nodes.Values.ToList();
+
+        if (graphDrawable.currentID == endID)
+        {
+
+            Node currentNode = graphDrawable.Nodes[endID];
+
+            while (currentNode != graphDrawable.Nodes[startID])
+            {
+                foreach (Link link in graphDrawable.Links)
+                {
+                    if ((link.id1 == currentNode.id && link.id2 == currentNode.visitedFrom) || (link.id1 == currentNode.visitedFrom && link.id2 == currentNode.id))
+                    {
+                        link.isPath = true;
+                    }
+                }
+                currentNode = graphDrawable.Nodes[(int)currentNode.visitedFrom];
+            }
+
+            graphView.Invalidate();
+            DisplayAlert("Успех", "Обход графа завершен", "Ok");
+            switchMode(6);
+        }
+
+    }
 
     void algorithmSwitcher(System.Object sender, Microsoft.Maui.Controls.CheckedChangedEventArgs e)
     {
@@ -23,148 +156,24 @@ public partial class MainPage : ContentPage
         //}
     }
 
-
     void addToGrid(Node node)
     {
-
         var graphView = this.graphDrawableView;
         var graphDrawable = (GraphDrawable)graphView.Drawable;
-
-        gridAnswer.AddRowDefinition(new RowDefinition());
-
-        Label label1 = new Label() { Text = node.id.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20, TextColor = graphDrawable.ColorList[(int)node.componentID - 1] };
-        Label label2 = new Label() { Text = node.dayVisited.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20, TextColor = graphDrawable.ColorList[(int)node.componentID - 1] };
-        Label label3 = new Label() { Text = node.componentID.ToString(), HorizontalOptions = LayoutOptions.Center, FontSize = 20, TextColor = graphDrawable.ColorList[(int)node.componentID - 1] };
-
-        gridAnswer.Add(label1, 1, gridAnswer.RowDefinitions.Count - 1);
-        gridAnswer.Add(label2, 0, gridAnswer.RowDefinitions.Count - 1);
-        gridAnswer.Add(label3, 2, gridAnswer.RowDefinitions.Count - 1);
     }
 
-
-    void BFS()
-    {
-        dayCount++;
-
-        bool nodeFound = false;
-
-        var graphView = this.graphDrawableView;
-        var graphDrawable = (GraphDrawable)graphView.Drawable;
-
-        List<int> temp = new List<int>(graphDrawable.currentIDs);
-
-        graphDrawable.visitedIDs.UnionWith(graphDrawable.currentIDs);
-
-        graphDrawable.currentIDs.Clear();
-
-        foreach (int id in temp)
-        {
-            foreach (Link link in graphDrawable.Links)
-            {
-                if (link.id1 == id && !graphDrawable.visitedIDs.Contains(link.id2) && !graphDrawable.currentIDs.Contains(link.id2))
-                {
-                    graphDrawable.currentIDs.Add(link.id2);
-                    graphDrawable.Nodes[link.id2].componentID = componentCount;
-                    graphDrawable.Nodes[link.id2].dayVisited = dayCount;
-                    addToGrid(graphDrawable.Nodes[link.id2]);
-                    nodeFound = true;
-                }
-                else if (link.id2 == id && !graphDrawable.visitedIDs.Contains(link.id1) && !graphDrawable.currentIDs.Contains(link.id1))
-                {
-                    graphDrawable.currentIDs.Add(link.id1);
-                    graphDrawable.Nodes[link.id1].componentID = componentCount;
-                    graphDrawable.Nodes[link.id1].dayVisited = dayCount;
-                    addToGrid(graphDrawable.Nodes[link.id1]);
-                    nodeFound = true;
-                }
-            }
-        }
-
-        if (!nodeFound)
-        {
-            foreach (Node node in graphDrawable.Nodes.Values)
-            {
-                if (!graphDrawable.visitedIDs.Contains(node.id))
-                {
-                    graphDrawable.currentIDs.Add(node.id);
-                    node.componentID = ++componentCount;
-                    node.dayVisited = dayCount;
-                    addToGrid(node);
-                    break;
-                }
-            }
-        }
-
-        graphView.Invalidate();
-
-        if (graphDrawable.visitedIDs.Count + graphDrawable.currentIDs.Count == graphDrawable.Nodes.Count)
-        {
-            DisplayAlert("Успех", "Обход графа завершен", "Ok");
-            switchMode(6);
-        }
-    }
-
-
-    void DFS()
-    {
-        var graphView = this.graphDrawableView;
-        var graphDrawable = (GraphDrawable)graphView.Drawable;
-
-        bool newNodeFound = false;
-
-        foreach (Link link in graphDrawable.Links)
-        {
-            if (link.id1 == graphDrawable.currentID && !graphDrawable.visitedIDs.Contains(link.id2))
-            {
-                graphDrawable.currentID = link.id2;
-                graphDrawable.visitedIDs.Add(link.id2);
-                graphDrawable.Nodes[link.id2].visitedFrom = link.id1;
-                graphDrawable.Nodes[link.id2].dayVisited = ++dayCount;
-                newNodeFound = true;
-                addToGrid(graphDrawable.Nodes[link.id2]);
-                break;
-            }
-            else if (link.id2 == graphDrawable.currentID && !graphDrawable.visitedIDs.Contains(link.id1))
-            {
-                graphDrawable.currentID = link.id1;
-                graphDrawable.visitedIDs.Add(link.id1);
-                graphDrawable.Nodes[link.id1].visitedFrom = link.id2;
-                graphDrawable.Nodes[link.id1].dayVisited = ++dayCount;
-                newNodeFound = true;
-                addToGrid(graphDrawable.Nodes[link.id1]);
-                break;
-            }
-        }
-
-        if (!newNodeFound)
-        {
-            graphDrawable.currentID = graphDrawable.Nodes[(int)graphDrawable.currentID].visitedFrom;
-        }
-
-        graphView.Invalidate();
-
-        if (graphDrawable.visitedIDs.Count == graphDrawable.Nodes.Count)
-        {
-            DisplayAlert("Успех", "Обход графа завершен", "Ok");
-            switchMode(6);
-        }
-    }
 
 
     void clearCanvas_Clicked(System.Object sender, System.EventArgs e)
     {
-        count = 1;
         var graphView = this.graphDrawableView;
         var graphDrawable = (GraphDrawable)graphView.Drawable;
-        graphDrawable.Nodes.Clear();
-        graphDrawable.Links.Clear();
-        graphDrawable.selectedID = null;
+        graphDrawable.clearCanvas();
         graphView.Invalidate();
         switchMode(0);
     }
 
-
-    void TapGestureRecognizer_Tapped(System.Object sender, Microsoft.Maui.Controls.TappedEventArgs e)
+    async void TapGestureRecognizer_Tapped(System.Object sender, Microsoft.Maui.Controls.TappedEventArgs e)
     {
         if (mode > 3) return;
 
@@ -191,11 +200,11 @@ public partial class MainPage : ContentPage
 
                 if (interSection)
                 {
-                    DisplayAlert("Ошибка", "Вершины пересекаются", "Ок");
+                    await DisplayAlert("Ошибка", "Вершины пересекаются", "Ок");
                 }
                 else
                 {
-                    graphDrawable.Nodes[count] = (new Node() { id = count++, X = X, Y = Y });
+                    graphDrawable.Nodes[graphDrawable.Nodes.Count + 1] = (new Node() { id = graphDrawable.Nodes.Count + 1, X = X, Y = Y });
                     graphView.Invalidate();
                 }
                 break;
@@ -215,13 +224,24 @@ public partial class MainPage : ContentPage
                             {
                                 if ((link.id1 == node.id && link.id2 == graphDrawable.selectedID) || (link.id1 == graphDrawable.selectedID && link.id2 == node.id))
                                 {
-                                    DisplayAlert("Ошибка", "Вершины уже соеденины", "Ок");
+                                    await DisplayAlert("Ошибка", "Вершины уже соеденины", "Ок");
                                     graphDrawable.selectedID = null;
                                     return;
                                 }
                             }
-                            graphDrawable.Links.Add(new Link() { id1 = (int)graphDrawable.selectedID, id2 = node.id });
-                            graphDrawable.selectedID = null;
+
+                            string result = await DisplayPromptAsync("Вес", "Введите вес дуги");
+                            int weight;
+                            if (Int32.TryParse(result, out weight) && weight > 0)
+                            {
+                                graphDrawable.Links.Add(new Link() { id1 = (int)graphDrawable.selectedID, id2 = node.id, weight = weight });
+                                graphDrawable.selectedID = null;
+                            }
+                            else
+                            {
+                                await DisplayAlert("Ошибка", "Неверноеь значение веса дуги", "Ok");
+                            }
+
                         }
                         graphView.Invalidate();
                         break;
@@ -270,7 +290,7 @@ public partial class MainPage : ContentPage
                                     return;
                                 }
                             }
-                            DisplayAlert("Ошибка", "Вершины не соединены", "Ok");
+                            await DisplayAlert("Ошибка", "Вершины не соединены", "Ok");
                             graphDrawable.selectedID = null;
                             break;
                         }
@@ -291,28 +311,34 @@ public partial class MainPage : ContentPage
 
         switch (num)
         {
+            // Добавить вершины
             case 0:
                 addNodesMode.IsEnabled = false;
                 mode = 0;
                 break;
+            // Соединить вершины
             case 1:
                 addLinksMode.IsEnabled = false;
                 mode = 1;
                 break;
+            // Удалить вершины
             case 2:
                 removeNodesMode.IsEnabled = false;
                 mode = 2;
                 break;
+            // Отсоеденить вершины
             case 3:
                 removeLinksMode.IsEnabled = false;
                 mode = 3;
                 break;
+            // Начать обход
             case 5:
                 foreach (Button button in canvasButtons.Children) button.IsEnabled = false;
                 saveGraph.IsEnabled = loadGraph.IsEnabled = false;
                 nextStep.IsEnabled = true;
                 resetAlgo.IsEnabled = true;
                 break;
+            // Обзод завершен
             case 6:
                 foreach (Button button in canvasButtons.Children) button.IsEnabled = false;
                 saveGraph.IsEnabled = loadGraph.IsEnabled = false;
@@ -322,73 +348,22 @@ public partial class MainPage : ContentPage
     }
 
 
-    void startAlgo_Clicked(System.Object sender, System.EventArgs e)
-    {
-        var graphView = this.graphDrawableView;
-        var graphDrawable = (GraphDrawable)graphView.Drawable;
 
-        int start = 0;
-        bool inputIsValid = int.TryParse(beginningEntry.Text, out start);
-
-        if (inputIsValid && graphDrawable.Nodes.Keys.Contains(start))
-        {
-            graphDrawable.resetNodes();
-            dayCount = 1;
-            componentCount = 1;
-            startID = start;
-            switchMode(5);
-
-            switch (algorithmID)
-            {
-                case 0:
-                    graphDrawable.currentIDs.Add(startID);
-                    graphDrawable.Nodes[startID].dayVisited = dayCount;
-                    graphDrawable.Nodes[startID].componentID = componentCount;
-                    break;
-                case 1:
-                    graphDrawable.currentID = startID;
-                    graphDrawable.visitedIDs.Add(startID);
-                    graphDrawable.Nodes[startID].dayVisited = dayCount;
-                    graphDrawable.Nodes[startID].visitedFrom = -1;
-                    break;
-            }
-            addToGrid(graphDrawable.Nodes[startID]);
-            graphView.Invalidate();
-        }
-        else
-        {
-            DisplayAlert("Ошибка", "Неверное значение вершины", "Ok");
-        }
-    }
 
 
     void resetAlgo_Clicked(System.Object sender, System.EventArgs e)
     {
-        dayCount = 1;
         var graphView = this.graphDrawableView;
         var graphDrawable = (GraphDrawable)graphView.Drawable;
         graphDrawable.resetNodes();
         graphView.Invalidate();
 
-        gridAnswer.Children.Clear();
-        gridAnswer.RowDefinitions.Clear();
-
+        //gridAnswer.Children.Clear();
+        //gridAnswer.RowDefinitions.Clear();
         switchMode(0);
     }
 
 
-    void nextStep_Clicked(System.Object sender, System.EventArgs e)
-    {
-        switch (algorithmID)
-        {
-            case 0:
-                BFS();
-                break;
-            case 1:
-                DFS();
-                break;
-        }
-    }
 
 
     void addNodesMode_Clicked(System.Object sender, System.EventArgs e)
@@ -441,7 +416,6 @@ public partial class MainPage : ContentPage
 
                 graphDrawable.Nodes = jsonobject.Nodes;
                 graphDrawable.Links = jsonobject.Links;
-                count = graphDrawable.Nodes.Count + 1;
                 graphView.Invalidate();
             }
         }
@@ -449,7 +423,6 @@ public partial class MainPage : ContentPage
         {
         }
     }
-
 
 
     void saveGraph_Clicked(System.Object sender, System.EventArgs e)
@@ -463,4 +436,10 @@ public partial class MainPage : ContentPage
         string jsonString = JsonSerializer.Serialize(jsonObject);
         File.WriteAllText(fileName, jsonString);
     }
+
+    async void test_Clicked(System.Object sender, System.EventArgs e)
+    {
+        string result = await DisplayPromptAsync("Вес", "Введите вес дуги");
+    }
+
 }

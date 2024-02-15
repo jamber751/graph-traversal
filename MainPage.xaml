@@ -22,20 +22,22 @@
                         </Grid>
                     </Frame>
 
-                    <Frame>
-                        <VerticalStackLayout x:Name="canvasButtons" Spacing="20">
-                            <Button x:Name="addNodesMode" Text="Добавить вершины" Clicked="addNodesMode_Clicked" IsEnabled="False"/>
-                            <Button x:Name="addLinksMode" Text="Соединить вершины" Clicked="addLinksMode_Clicked" IsEnabled="True"/>
-                            <Button x:Name="removeNodesMode" Text="Удалить вершины" Clicked="removeNodesMode_Clicked" IsEnabled="True"/>
-                            <Button x:Name="removeLinksMode" Text="Отсоединить вершины" Clicked="removeLinksMode_Clicked" IsEnabled="True"/>
-                            <Button x:Name="clearCanvas" Text="Очистить полотно" Clicked="clearCanvas_Clicked"/>
+                    <Frame Margin="0" Padding="0" CornerRadius="0">
+                        <VerticalStackLayout x:Name="canvasButtons" Spacing="0">
+                            <Button x:Name="addNodesMode" Text="Добавить вершины" Clicked="addNodesMode_Clicked" IsEnabled="False" CornerRadius="0"/>
+                            <Button x:Name="addLinksMode" Text="Соединить вершины" Clicked="addLinksMode_Clicked" IsEnabled="True" CornerRadius="0"/>
+                            <Button x:Name="removeNodesMode" Text="Удалить вершины" Clicked="removeNodesMode_Clicked" IsEnabled="True" CornerRadius="0"/>
+                            <Button x:Name="removeLinksMode" Text="Отсоединить вершины" Clicked="removeLinksMode_Clicked" IsEnabled="True" CornerRadius="0"/>
+                            <Button x:Name="clearCanvas" Text="Очистить полотно" Clicked="clearCanvas_Clicked" CornerRadius="0"/>
                         </VerticalStackLayout>
                     </Frame>
 
                     <Frame>
-                        <VerticalStackLayout Spacing="20">
-                            <Label Text="Начало обхода" FontSize="20" VerticalOptions="Center"/>
-                            <Entry x:Name="beginningEntry" HorizontalOptions="Fill"/>
+                        <VerticalStackLayout Spacing="10">
+                            <!--<Label Text="Начало пути" FontSize="20" VerticalOptions="Center"/>-->
+                            <!--<Entry x:Name="startingPointEntry" HorizontalOptions="Fill"/>-->
+                            <!--<Label Text="Конец пути" FontSize="20" VerticalOptions="Center"/>
+                            <Entry x:Name="destinationPointEntry" HorizontalOptions="Fill"/>-->
 
                             <!--<Label Text="Способ обхода" HorizontalOptions="Start" FontSize="20"/>-->
 
@@ -53,7 +55,7 @@
                             </VerticalStackLayout>-->
 
                             <Grid ColumnDefinitions="5*, 5*" ColumnSpacing="10">
-                                <Button x:Name="startAlgo" Text="Начало" Clicked="startAlgo_Clicked" IsEnabled="True" Grid.Column="0"/>
+                                <Button x:Name="startAlgo" Text="В путь" Clicked="startAlgo_Clicked" IsEnabled="True" Grid.Column="0"/>
                                 <Button x:Name="nextStep" Text="Шаг" Clicked="nextStep_Clicked" IsEnabled="False" Grid.Column="1"/>
                             </Grid>
 
@@ -64,7 +66,7 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <Frame Grid.Column="1">
+            <Frame Grid.Column="1" Grid.ColumnSpan="2">
                 <GraphicsView x:Name="graphDrawableView" Drawable="{StaticResource drawable}" BackgroundColor="#EAEEFA"
                       HeightRequest="900"
                       WidthRequest="1220">
@@ -74,21 +76,33 @@
                 </GraphicsView>
             </Frame>
 
-            <Frame Grid.Column="2">
-                <VerticalStackLayout Spacing="20" Margin="20">
-                    <Grid ColumnDefinitions="3*, 3*, 3*">
-                        <Label Grid.Column="0" Text="День" FontSize="20" HorizontalOptions="Center"/>
-                        <Label Grid.Column="1" Text="Узел" FontSize="20" HorizontalOptions="Center"/>
-                        <Label Grid.Column="2" Text="Компонент" FontSize="20" HorizontalOptions="Center"/>
-                    </Grid>
-                    <ScrollView MaximumHeightRequest="800">
-                        <Grid x:Name="gridAnswer" ColumnDefinitions="3*, 3*, 3*" RowSpacing="20">
-                        </Grid>
-                    </ScrollView>
+            <!--<Frame Grid.Column="2">
+                <VerticalStackLayout>
+                    <ListView x:Name="resultListView" MaximumHeightRequest="900">
+                        <ListView.Header>
+                            <Grid ColumnDefinitions="25*, 25*, 25*, 25*">
+                                <Label Grid.Column="0" Text="N1" HorizontalOptions="Center" VerticalOptions="Center" FontSize="20"/>
+                                <Label Grid.Column="1" Text="N2" HorizontalOptions="Center" VerticalOptions="Center" FontSize="20"/>
+                                <Label Grid.Column="2" Text="Длина" HorizontalOptions="Center" VerticalOptions="Center" FontSize="20"/>
+                                <Label Grid.Column="3" Text="Флаг" HorizontalOptions="Center" VerticalOptions="Center" FontSize="20"/>
+                            </Grid>
+                        </ListView.Header>
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <Grid ColumnDefinitions="25*, 25*, 25*, 25*">
+                                        <Label Grid.Column="0" Text="{Binding id1}" VerticalOptions="Center" HorizontalOptions="Center" FontSize="20"/>
+                                        <Label Grid.Column="1" Text="{Binding id2}" VerticalOptions="Center" HorizontalOptions="Center" FontSize="20"/>
+                                        <Label Grid.Column="2" Text="{Binding weight}" VerticalOptions="Center" HorizontalOptions="Center" FontSize="20"/>
+                                        <Label Grid.Column="3" Text="{Binding marker}" VerticalOptions="Center" HorizontalOptions="Center" FontSize="20"/>
+                                    </Grid>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </VerticalStackLayout>
-            </Frame>
-
+            </Frame>-->
         </Grid>
-
     </VerticalStackLayout>
 </ContentPage>
