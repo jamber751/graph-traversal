@@ -6,11 +6,12 @@ An application for visualizing graphs and applying the most common tree-traversi
 
 ## Video demo
 
-https://www.youtube.com/watch?v=m4C-y5Ea2rk
+[![Video demo1](readme_img/anim1.gif)](https://www.youtube.com/watch?v=m4C-y5Ea2rk)
 
-https://www.youtube.com/watch?v=IL2FOwGLfvE
+[![Video demo2](readme_img/kruskal.gif)](https://www.youtube.com/watch?v=IL2FOwGLfvE)
 
-## Implemenmtation
+
+## Implementation
 
 The program is implemented using C# and .NET MAUI
 
