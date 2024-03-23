@@ -14,54 +14,55 @@ public partial class MainPage : ContentPage
 
     void nextStep_Clicked(System.Object sender, System.EventArgs e)
     {
-        var graphView = this.graphDrawableView;
-        var graphDrawable = (GraphDrawable)graphView.Drawable;
-        graphDrawable.Kruskal();
-        graphView.Invalidate();
+        //var graphView = this.graphDrawableView;
+        //var graphDrawable = (GraphDrawable)graphView.Drawable;
+        //graphDrawable.Kruskal();
+        //graphView.Invalidate();
 
-        int[,] matrix1 = new int[matrix.GetLength(0), matrix.GetLength(1) + 1];
+        //int[,] matrix1 = new int[matrix.GetLength(0), matrix.GetLength(1) + 1];
 
-        for (int i = 0; i < matrix.GetLength(0); i++)
-        {
-            for (int j = 0; j < matrix.GetLength(1); j++)
-            {
-                matrix1[i, j] = matrix[i, j];
-            }
-        }
+        //for (int i = 0; i < matrix.GetLength(0); i++)
+        //{
+        //    for (int j = 0; j < matrix.GetLength(1); j++)
+        //    {
+        //        matrix1[i, j] = matrix[i, j];
+        //    }
+        //}
 
-        for (int i = 0; i < matrix.GetLength(0); i++)
-        {
-            matrix1[i, matrix.GetLength(1)] = graphDrawable.Links[i].marker;
-        }
-        matrix = matrix1;
-
-
-        if (graphDrawable.isFinished())
-        {
-            DisplayAlert("Успех", "Обход графа завершен", "Ok");
-            switchMode(6);
+        //for (int i = 0; i < matrix.GetLength(0); i++)
+        //{
+        //    matrix1[i, matrix.GetLength(1)] = graphDrawable.Links[i].marker;
+        //}
+        //matrix = matrix1;
 
 
-            using (StreamWriter writer = new StreamWriter("/Users/jrrrrr/Desktop/table.csv"))
-            {
-                int rows = matrix.GetLength(0);
-                int columns = matrix.GetLength(1);
+        //if (graphDrawable.isFinished())
+        //{
+        //    DisplayAlert("Успех", "Обход графа завершен", "Ok");
+        //    switchMode(6);
 
-                for (int i = 0; i < rows; i++)
-                {
-                    for (int j = 0; j < columns; j++)
-                    {
-                        writer.Write(matrix[i, j]);
 
-                        if (j < columns - 1)
-                        {
-                            writer.Write(",");
-                        }
-                    }
-                    writer.WriteLine();
-                }
-            }
-        }
+        //    using (StreamWriter writer = new StreamWriter("/Users/jrrrrr/Desktop/table.csv"))
+        //    {
+        //        int rows = matrix.GetLength(0);
+        //        int columns = matrix.GetLength(1);
+
+        //        for (int i = 0; i < rows; i++)
+        //        {
+        //            for (int j = 0; j < columns; j++)
+        //            {
+        //                writer.Write(matrix[i, j]);
+
+        //                if (j < columns - 1)
+        //                {
+        //                    writer.Write(",");
+        //                }
+        //            }
+        //            writer.WriteLine();
+        //        }
+        //    }
+        //}
+        Dijkstra();
     }
 
 
